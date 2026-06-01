@@ -32,13 +32,30 @@
         <p class="summary-label">Start Timing</p>
         <p class="summary-val">{{ user.availability_start or 'Immediately' }}</p>
       </div>
-      <div>
+      
+      <div style="grid-column: span 4; border-top: 1px solid var(--border); padding-top: 0.75rem; margin-top: 0.25rem;">
         <p class="summary-label">Self-Declared Skills</p>
-        <p class="summary-val scroll-x">{{ user.technical_skills or 'None' }}</p>
+        <div class="tag-row" style="margin-top: 0.4rem;">
+          {% if user.technical_skills %}
+            {% for skill in user.technical_skills.split(',') %}
+              <span class="badge secondary" style="font-size: 0.75rem; margin-bottom: 0.25rem; display: inline-block;">{{ skill.strip() }}</span>
+            {% endfor %}
+          {% else %}
+            <span class="muted" style="font-size: 0.8rem; color: #94a3b8;">None</span>
+          {% endif %}
+        </div>
       </div>
-      <div>
+      <div style="grid-column: span 4; border-top: 1px solid var(--border); padding-top: 0.75rem;">
         <p class="summary-label">Resume Parsed Skills</p>
-        <p class="summary-val scroll-x">{{ user.extracted_skills or 'Upload PDF in profile' }}</p>
+        <div class="tag-row" style="margin-top: 0.4rem;">
+          {% if user.extracted_skills %}
+            {% for skill in user.extracted_skills.split(',') %}
+              <span class="badge secondary" style="font-size: 0.75rem; margin-bottom: 0.25rem; display: inline-block;">{{ skill.strip() }}</span>
+            {% endfor %}
+          {% else %}
+            <span class="muted" style="font-size: 0.8rem; color: #94a3b8;">Upload PDF resume in profile</span>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
@@ -60,13 +77,6 @@
   </div>
 
   <aside class="sidebar-area">
-    <div class="panel card small-panel" style="min-height: 250px; display: flex; flex-direction: column;">
-      <h2>Suitability Analytics</h2>
-      <p class="panel-desc text-small">Compatibility across core tech domains</p>
-      <div style="flex: 1; min-height: 180px; position: relative;">
-        <canvas id="domain-chart"></canvas>
-      </div>
-    </div>
 
     <div class="panel card small-panel">
       <h2>Trending Skills</h2>

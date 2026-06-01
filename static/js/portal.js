@@ -2,7 +2,6 @@
 import { parseCSV } from "./csv_parser.js";
 import { calculateMatch, extractSkills } from "./matching_engine.js";
 import { renderDashboardCards, renderTrendingSkills, renderCoursePathways } from "./portal_view.js";
-import { initDomainChart } from "./portal_charts.js";
 
 const DEFAULT_PROFILE = {
   name: "Guest Student", email: "guest@example.com", career_goal: "Software Developer",
@@ -51,8 +50,23 @@ function renderProfileFields() {
   t("sum-goal", profileData.career_goal);
   t("sum-locations", profileData.preferred_locations);
   t("sum-start", profileData.availability_start);
-  t("sum-skills", profileData.technical_skills);
-  t("sum-extracted", profileData.extracted_skills);
+  t("sum-mode", profileData.availability_type + " · " + profileData.availability_duration);
+
+  const renderBadges = (id, text) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!text || text.toLowerCase() === "none" || text.toLowerCase() === "not specified") {
+      el.innerHTML = `<span class="muted" style="font-size:0.8rem;color:#94a3b8;">None</span>`;
+      return;
+    }
+    el.innerHTML = text.split(/[\n,;]+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 0)
+      .map(s => `<span class="badge secondary" style="font-size:0.75rem;margin-right:0.25rem;margin-bottom:0.25rem;">${s}</span>`)
+      .join("");
+  };
+  renderBadges("sum-skills", profileData.technical_skills);
+  renderBadges("sum-extracted", profileData.extracted_skills);
 }
 
 function setupEventListeners() {
@@ -127,7 +141,6 @@ function renderDashboard(limit = 5) {
   renderDashboardCards(ranked, limit, () => renderDashboard(25));
   renderTrendingSkills(internshipsData);
   renderCoursePathways(ranked[0]);
-  initDomainChart(profileData);
 }
 
 function showToast(msg, isErr = false) {

@@ -106,13 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const trendData = await trendRes.json();
       trendingContainer.innerHTML = (trendData.trending || []).map(skill => `<span class="badge">${skill}</span>`).join("");
 
-      // Draw Suitability Radar Chart
-      const selfSkills = document.querySelector('.welcome-summary div:nth-child(5) .summary-val')?.textContent || "";
-      const parsedSkills = document.querySelector('.welcome-summary div:nth-child(6) .summary-val')?.textContent || "";
-      if (window.initDomainChart) {
-        window.initDomainChart(selfSkills + ", " + parsedSkills);
-      }
-
       const topMatch = list[0];
       if (topMatch && topMatch.missing && topMatch.missing.length > 0) {
         coursesContainer.innerHTML = "";

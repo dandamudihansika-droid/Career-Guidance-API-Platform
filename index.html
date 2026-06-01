@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="static/css/portal.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
   </script>
@@ -34,8 +33,16 @@
             <div><p class="summary-label">Career Goal</p><p class="summary-val" id="sum-goal">Software Developer</p></div>
             <div><p class="summary-label">Target Cities</p><p class="summary-val" id="sum-locations">Bangalore, Remote</p></div>
             <div><p class="summary-label">Start Timing</p><p class="summary-val" id="sum-start">Immediately</p></div>
-            <div><p class="summary-label">Technical Skills</p><p class="summary-val" id="sum-skills">HTML, CSS, JavaScript</p></div>
-            <div><p class="summary-label">Resume Parsed Skills</p><p class="summary-val" id="sum-extracted">Python, SQL</p></div>
+            <div><p class="summary-label">Availability Mode</p><p class="summary-val" id="sum-mode">Any</p></div>
+            
+            <div style="grid-column: span 4; border-top: 1px solid var(--border); padding-top: 0.75rem; margin-top: 0.25rem;">
+              <p class="summary-label">Self-Declared Skills</p>
+              <div id="sum-skills" class="tag-row" style="margin-top: 0.4rem;"></div>
+            </div>
+            <div style="grid-column: span 4; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <p class="summary-label">Resume Parsed Skills</p>
+              <div id="sum-extracted" class="tag-row" style="margin-top: 0.4rem;"></div>
+            </div>
           </div>
         </div>
 
@@ -48,13 +55,6 @@
         </div>
 
         <aside class="sidebar-area" style="display: flex; flex-direction: column; gap: 1.5rem;">
-          <div class="panel" style="min-height: 250px; display: flex; flex-direction: column;">
-            <h2>Suitability Analytics</h2>
-            <p class="panel-desc">Compatibility across core tech domains</p>
-            <div style="flex: 1; min-height: 180px; position: relative;">
-              <canvas id="domain-chart"></canvas>
-            </div>
-          </div>
           <div class="panel">
             <h2>Trending Skills</h2>
             <p class="panel-desc">Most requested skills from active corporate listings</p>
