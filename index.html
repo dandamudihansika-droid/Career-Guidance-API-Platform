@@ -22,9 +22,9 @@
 
   <main class="container">
     <!-- DASHBOARD VIEW -->
-    <div class="tab-content active" id="tab-dash">
-      <section class="dashboard-grid">
-        <div class="welcome-card" style="grid-column: 1 / -1;">
+    <div class="tab-content active" id="tab-dash" style="height: 100%; min-height: 0;">
+      <section class="dashboard-grid" style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%; height: 100%; overflow-y: auto; scrollbar-width: thin; padding-bottom: 2rem;">
+        <div class="welcome-card" style="width: 100%; flex-shrink: 0; margin-bottom: 0;">
           <p class="eyebrow">Interactive career advisor</p>
           <h2>Welcome to your Internship Match Dashboard!</h2>
           <p class="subtitle">Real-time matching powered by automated profile analytics & dataset queries.</p>
@@ -46,26 +46,26 @@
           </div>
         </div>
 
-        <div class="panel" style="margin-bottom: 0;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%; flex-shrink: 0;">
+          <div class="panel" style="margin-bottom: 0; height: auto !important; min-height: 0;">
+            <h2>Trending Skills</h2>
+            <p class="panel-desc">Most requested skills from active corporate listings</p>
+            <div id="trending-container" class="tag-row"></div>
+          </div>
+          <div class="panel" style="margin-bottom: 0; height: auto !important; min-height: 0;">
+            <h2>Suggested Course Pathways</h2>
+            <p class="panel-desc">Enhance matching scores to reach 100% suitability</p>
+            <div id="courses-container"></div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom: 0; height: auto !important; min-height: 0; width: 100%;">
           <h2>Your Internship Recommendations</h2>
           <p class="panel-desc">Calculated in real-time using weighted skills, domain relevance, location city, and availability.</p>
           <div id="recommendations-container">
             <p class="loading-placeholder">Running matching engines...</p>
           </div>
         </div>
-
-        <aside class="sidebar-area" style="display: flex; flex-direction: column; gap: 1.5rem;">
-          <div class="panel">
-            <h2>Trending Skills</h2>
-            <p class="panel-desc">Most requested skills from active corporate listings</p>
-            <div id="trending-container" class="tag-row"></div>
-          </div>
-          <div class="panel">
-            <h2>Suggested Course Pathways</h2>
-            <p class="panel-desc">Enhance matching scores to reach 100% suitability</p>
-            <div id="courses-container"></div>
-          </div>
-        </aside>
       </section>
     </div>
 

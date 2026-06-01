@@ -1,8 +1,9 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<section class="dashboard-grid">
-  <div class="welcome-card">
+<section class="dashboard-grid" style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%; height: 100%; overflow-y: auto; scrollbar-width: thin; padding-bottom: 2rem;">
+  <!-- 1. Welcome Card -->
+  <div class="welcome-card" style="width: 100%; flex-shrink: 0; margin-bottom: 0;">
     <div class="welcome-header">
       <div>
         <p class="eyebrow">Interactive career advisor</p>
@@ -60,25 +61,9 @@
     </div>
   </div>
 
-  <div class="main-content-area">
-    <section class="panel recommendation-panel" style="margin-bottom: 0;">
-      <div class="panel-heading">
-        <h2>Your Internship Recommendations</h2>
-        <p class="panel-desc">API calculated using weighted skills, domain relevance, location city, and availability.</p>
-      </div>
-
-      <div id="recommendations-container" class="internship-list-wrapper">
-        <div class="loading-spinner-wrapper">
-          <div class="spinner"></div>
-          <p>Running API matching engines...</p>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <aside class="sidebar-area">
-
-    <div class="panel card small-panel">
+  <!-- 2. Trending & Course Pathways Row -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%; flex-shrink: 0;">
+    <div class="panel card small-panel" style="margin-bottom: 0; height: auto !important; min-height: 0;">
       <h2>Trending Skills</h2>
       <p class="panel-desc text-small">Most requested skills from active corporate listings</p>
       <div id="trending-container" class="badge-row">
@@ -86,13 +71,28 @@
       </div>
     </div>
 
-    <div class="panel card small-panel">
+    <div class="panel card small-panel" style="margin-bottom: 0; height: auto !important; min-height: 0;">
       <h2>Suggested Course Pathways</h2>
       <p class="panel-desc text-small">Enhance matching scores to reach 100% suitability</p>
       <div id="courses-container">
         <span class="loading-placeholder">Analysing gap...</span>
       </div>
     </div>
-  </aside>
+  </div>
+
+  <!-- 3. Recommendations -->
+  <div class="panel recommendation-panel" style="width: 100%; flex-shrink: 0; margin-bottom: 0; height: auto !important; min-height: 0;">
+    <div class="panel-heading">
+      <h2>Your Internship Recommendations</h2>
+      <p class="panel-desc">API calculated using weighted skills, domain relevance, location city, and availability.</p>
+    </div>
+
+    <div id="recommendations-container" class="internship-list-wrapper">
+      <div class="loading-spinner-wrapper">
+        <div class="spinner"></div>
+        <p>Running API matching engines...</p>
+      </div>
+    </div>
+  </div>
 </section>
 {% endblock %}
