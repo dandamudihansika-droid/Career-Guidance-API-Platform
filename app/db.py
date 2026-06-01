@@ -89,6 +89,25 @@ def init_database():
             completed_profile INTEGER DEFAULT 0
         )
     """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS internships (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            internship_id TEXT UNIQUE,
+            profile TEXT,
+            company TEXT,
+            location TEXT,
+            start_date TEXT,
+            stipend TEXT,
+            duration TEXT,
+            apply_by TEXT,
+            offer TEXT,
+            education TEXT,
+            skills TEXT,
+            perks TEXT,
+            description TEXT
+        )
+    """)
     conn.commit()
     migrate_db(conn)
     conn.close()
+
