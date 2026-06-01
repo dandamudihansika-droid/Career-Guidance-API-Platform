@@ -16,11 +16,11 @@ header h1 { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
 .nav-btn.active { background: var(--primary); color: #fff; }
 
 .container { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; overflow: hidden; padding: 1rem 1.5rem; min-height: 0; }
-.tab-content { display: none; height: 100%; min-height: 0; }
+.tab-content { display: none; height: 100%; min-height: 0; width: 100%; }
 .tab-content.active { display: flex; flex-direction: column; }
 
-.dashboard-grid { flex: 1; display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: auto 1fr; gap: 1rem; overflow: hidden; min-height: 0; height: 100%; }
-@media (max-width: 900px) {
+.dashboard-grid { flex: 1; display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: auto 1fr; gap: 1rem; overflow: hidden; min-height: 0; height: 100%; width: 100%; }
+@media (max-width: 768px) {
   .dashboard-grid { grid-template-columns: 1fr; grid-template-rows: auto auto auto; overflow-y: auto; }
   body { overflow: auto; height: auto; }
   .container { height: auto; overflow: auto; }
@@ -35,7 +35,7 @@ header h1 { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
 .summary-label { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); }
 .summary-val { font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-top: 0.1rem; }
 
-.panel { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; display: flex; flex-direction: column; overflow: hidden; min-height: 0; height: 100%; }
+.panel { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; display: flex; flex-direction: column; overflow: hidden; min-height: 0; height: 100%; width: 100%; }
 .panel h2 { font-size: 1.15rem; font-weight: 700; color: var(--primary); }
 .panel-desc { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem; }
 
@@ -82,5 +82,4 @@ header h1 { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
 .file-info-text { font-size: 0.75rem; color: var(--accent); font-weight: 600; }
 
 #recommendations-container { overflow-y: auto; flex: 1; min-height: 0; scrollbar-width: thin; }
-#tab-profile { overflow-y: auto; height: 100%; min-height: 0; padding-bottom: 2rem; scrollbar-width: thin; }
-
+#tab-profile { overflow-y: auto; height: 100%; min-height: 0; padding-bottom: 2rem; scrollbar-width: thin; width: 100%; }
