@@ -36,7 +36,6 @@ env/
 .idea/
 
 # Local databases & uploads
-career_guidance.db
 uploads/*
 !uploads/.gitkeep
 .env
