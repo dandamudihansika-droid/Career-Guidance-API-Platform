@@ -3,58 +3,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CareerGuide API - Developer Portal</title>
+  <title>Career Guidance Platform - Interactive Advisor</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root { --bg: #f8fafc; --text: #0f172a; --text-muted: #64748b; --primary: #3D52A0; --accent: #7091E6; --border: rgba(61, 82, 160, 0.12); }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
-    body { background: radial-gradient(circle at 10% 20%, #ffffff 0%, #f1f5f9 90%); color: var(--text); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 2rem 1.5rem; }
-    .portal-card { background: rgba(255, 255, 255, 0.88); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; max-width: 680px; width: 100%; box-shadow: 0 15px 35px rgba(61, 82, 160, 0.06), inset 0 1px 0 rgba(255,255,255,0.9); }
-    h1 { font-size: 2.4rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
-    .eyebrow { text-transform: uppercase; font-size: 0.75rem; font-weight: 700; color: var(--accent); letter-spacing: 0.1rem; }
-    .subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 1.5rem; line-height: 1.5; }
-    
-    .section-title { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
-    .endpoints { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
-    .endpoint-item { background: #ffffff; border: 1px solid var(--border); padding: 0.75rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; display: flex; gap: 0.5rem; align-items: center; }
-    .badge { padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #fff; }
-    .badge.get { background: #10b981; }
-    .badge.post { background: #3b82f6; }
-    .badge.put { background: #f59e0b; }
-    .badge.delete { background: #ef4444; }
-
-    .commands { background: #0f172a; color: #38bdf8; padding: 1rem; border-radius: 10px; font-family: monospace; font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.6; }
-    .commands span { color: #94a3b8; }
-    
-    .button { display: block; text-align: center; padding: 0.85rem; border-radius: 10px; font-weight: 700; text-decoration: none; border: none; cursor: pointer; transition: all 0.3s; font-size: 1rem; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #ffffff; box-shadow: 0 4px 14px rgba(61, 82, 160, 0.25); }
-    .button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(61, 82, 160, 0.4); }
-  </style>
+  <link rel="stylesheet" href="static/css/portal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script>
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  </script>
 </head>
 <body>
-  <div class="portal-card">
-    <p class="eyebrow">Project Presentation Portal</p>
-    <h1>CareerGuide API</h1>
-    <p class="subtitle">A modular full-stack career advisor and resume skill extractor powered by weighted matching algorithms, SQLite storage, and secure RESTful endpoints.</p>
-    
-    <p class="section-title">Backend REST API Endpoints</p>
-    <div class="endpoints">
-      <div class="endpoint-item"><span class="badge get">GET</span> /api/recommendations</div>
-      <div class="endpoint-item"><span class="badge post">POST</span> /api/profile</div>
-      <div class="endpoint-item"><span class="badge put">PUT</span> /api/profile/skills</div>
-      <div class="endpoint-item"><span class="badge delete">DELETE</span> /api/profile/resume</div>
+  <header>
+    <h1>CareerGuidance <span style="font-weight: 300;">Advisor</span></h1>
+    <div class="nav-links">
+      <button class="nav-btn active" id="btn-dash">Dashboard</button>
+      <button class="nav-btn" id="btn-profile">Edit Profile</button>
     </div>
-    
-    <p class="section-title">How to Run Locally</p>
-    <div class="commands">
-      <span># 1. Activate Virtual Environment</span><br>
-      .\venv\Scripts\Activate.ps1<br>
-      <span># 2. Seed SQLite Database (8,483 records)</span><br>
-      python init_db.py<br>
-      <span># 3. Start Backend Server</span><br>
-      python app.py
+  </header>
+
+  <main class="container">
+    <!-- DASHBOARD VIEW -->
+    <div class="tab-content active" id="tab-dash">
+      <section class="dashboard-grid">
+        <div class="welcome-card" style="grid-column: 1 / -1;">
+          <p class="eyebrow">Interactive career advisor</p>
+          <h2>Welcome to your Internship Match Dashboard!</h2>
+          <p class="subtitle">Real-time matching powered by automated profile analytics & dataset queries.</p>
+          
+          <div class="welcome-summary">
+            <div><p class="summary-label">Career Goal</p><p class="summary-val" id="sum-goal">Software Developer</p></div>
+            <div><p class="summary-label">Target Cities</p><p class="summary-val" id="sum-locations">Bangalore, Remote</p></div>
+            <div><p class="summary-label">Start Timing</p><p class="summary-val" id="sum-start">Immediately</p></div>
+            <div><p class="summary-label">Technical Skills</p><p class="summary-val" id="sum-skills">HTML, CSS, JavaScript</p></div>
+            <div><p class="summary-label">Resume Parsed Skills</p><p class="summary-val" id="sum-extracted">Python, SQL</p></div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom: 0;">
+          <h2>Your Internship Recommendations</h2>
+          <p class="panel-desc">Calculated in real-time using weighted skills, domain relevance, location city, and availability.</p>
+          <div id="recommendations-container">
+            <p class="loading-placeholder">Running matching engines...</p>
+          </div>
+        </div>
+
+        <aside class="sidebar-area" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <div class="panel">
+            <h2>Trending Skills</h2>
+            <p class="panel-desc">Most requested skills from active corporate listings</p>
+            <div id="trending-container" class="tag-row"></div>
+          </div>
+          <div class="panel">
+            <h2>Suggested Course Pathways</h2>
+            <p class="panel-desc">Enhance matching scores to reach 100% suitability</p>
+            <div id="courses-container"></div>
+          </div>
+        </aside>
+      </section>
     </div>
+
+    <!-- PROFILE VIEW -->
+    <div class="tab-content" id="tab-profile">
+      <div class="panel" style="max-width: 800px; margin: 0 auto;">
+        <h2>Customize Your Student Profile</h2>
+        <p class="panel-desc">Modify your preferences and upload a resume to recalculate optimal matches instantly.</p>
+        
+        <form id="profile-form">
+          <div class="form-grid">
+            <div class="form-group"><label for="p-name">Full Name</label><input type="text" id="p-name" required></div>
+            <div class="form-group"><label for="p-email">Email Address</label><input type="email" id="p-email" required></div>
+            <div class="form-group"><label for="p-goal">Career Goal</label><input type="text" id="p-goal" placeholder="e.g. Frontend Engineer"></div>
+            <div class="form-group"><label for="p-domains">Preferred Domains</label><input type="text" id="p-domains" placeholder="e.g. Web, Python"></div>
+            <div class="form-group"><label for="p-locations">Preferred Cities</label><input type="text" id="p-locations" placeholder="e.g. Bangalore, Mumbai"></div>
+            <div class="form-group"><label for="p-start">Start Date Timing</label><input type="text" id="p-start" placeholder="e.g. Immediately"></div>
+            <div class="form-group"><label for="p-dur">Availability Duration</label><input type="text" id="p-dur" placeholder="e.g. 6 Months"></div>
+            <div class="form-group">
+              <label for="p-type">Work Mode Preference</label>
+              <select id="p-type"><option value="Any">Any / Hybrid</option><option value="WFH">Work From Home / Remote</option><option value="Office">On-site Office</option></select>
+            </div>
+            <div class="form-group" style="grid-column: span 2;"><label for="p-skills">Technical Skills</label><input type="text" id="p-skills" placeholder="e.g. React, SQL"></div>
+            <div class="form-group" style="grid-column: span 2;"><label for="p-interests">General Interests</label><input type="text" id="p-interests" placeholder="e.g. Coding, Design"></div>
+          </div>
+          <button type="submit" class="button" style="margin-top: 1.5rem;">Save Profile & Recalculate Matches</button>
+        </form>
+
+        <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+          <h3>Resume PDF Skills Extractor</h3>
+          <p class="panel-desc" style="margin-bottom: 0.5rem;">Upload your PDF resume. Our client-side WebAssembly parser extracts matching keywords instantly.</p>
+          <div class="file-upload-box" onclick="document.getElementById('p-resume').click()">
+            <p class="file-info-text">Click here to upload your PDF resume</p>
+            <input type="file" id="p-resume" accept="application/pdf">
+          </div>
+          <p class="muted" style="margin-top: 0.5rem;">Extracted Skills: <strong id="extracted-display" style="color: var(--primary);">None</strong></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initPortal, saveProfile, handleResumeUpload } from "./static/js/portal.js";
     
-    <a href="http://127.0.0.1:5000" target="_blank" class="button">Launch Local Application (http://127.0.0.1:5000)</a>
-  </div>
+    document.addEventListener("DOMContentLoaded", () => {
+      initPortal();
+      
+      const tabDash = document.getElementById("tab-dash");
+      const tabProfile = document.getElementById("tab-profile");
+      const btnDash = document.getElementById("btn-dash");
+      const btnProfile = document.getElementById("btn-profile");
+
+      const switchTab = (tab) => {
+        if (tab === "dash") {
+          tabDash.classList.add("active"); tabProfile.classList.remove("active");
+          btnDash.classList.add("active"); btnProfile.classList.remove("active");
+        } else {
+          tabDash.classList.remove("active"); tabProfile.classList.add("active");
+          btnDash.classList.remove("active"); btnProfile.classList.add("active");
+        }
+      };
+
+      btnDash.addEventListener("click", () => switchTab("dash"));
+      btnProfile.addEventListener("click", () => switchTab("profile"));
+
+      document.getElementById("profile-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const data = {
+          name: document.getElementById("p-name").value,
+          email: document.getElementById("p-email").value,
+          career_goal: document.getElementById("p-goal").value,
+          preferred_domains: document.getElementById("p-domains").value,
+          preferred_locations: document.getElementById("p-locations").value,
+          interests: document.getElementById("p-interests").value,
+          technical_skills: document.getElementById("p-skills").value,
+          availability_start: document.getElementById("p-start").value,
+          availability_duration: document.getElementById("p-dur").value,
+          availability_type: document.getElementById("p-type").value
+        };
+        saveProfile(data);
+        switchTab("dash");
+      });
+
+      document.getElementById("p-resume").addEventListener("change", (e) => {
+        if (e.target.files.length > 0) {
+          handleResumeUpload(e.target.files[0]);
+        }
+      });
+    });
+  </script>
 </body>
 </html>
