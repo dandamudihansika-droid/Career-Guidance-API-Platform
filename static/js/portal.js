@@ -2,6 +2,7 @@
 import { parseCSV } from "./csv_parser.js";
 import { calculateMatch, extractSkills } from "./matching_engine.js";
 import { renderDashboardCards, renderTrendingSkills, renderCoursePathways } from "./portal_view.js";
+import { initDomainChart } from "./portal_charts.js";
 
 const DEFAULT_PROFILE = {
   name: "Guest Student", email: "guest@example.com", career_goal: "Software Developer",
@@ -14,16 +15,10 @@ const DEFAULT_PROFILE = {
 let internshipsData = [];
 let profileData = DEFAULT_PROFILE;
 
-function getProfile() {
-  const local = localStorage.getItem("career_profile");
-  if (local) return JSON.parse(local);
-  localStorage.setItem("career_profile", JSON.stringify(DEFAULT_PROFILE));
-  return DEFAULT_PROFILE;
-}
-
 export async function initPortal() {
-  profileData = getProfile();
+  profileData = localStorage.getItem("career_profile") ? JSON.parse(localStorage.getItem("career_profile")) : DEFAULT_PROFILE;
   renderProfileFields();
+  setupEventListeners();
   
   try {
     const res = await fetch("data/internships.csv");
@@ -33,7 +28,7 @@ export async function initPortal() {
     renderDashboard(5);
   } catch (err) {
     document.getElementById("recommendations-container").innerHTML = 
-      `<p class="loading-placeholder" style="color:#f87171;">⚠️ Failed to load internships dataset. Please ensure 'data/internships.csv' is committed.</p>`;
+      `<p class="loading-placeholder" style="color:#f87171;">⚠️ Failed to load dataset.</p>`;
   }
 }
 
@@ -50,23 +45,60 @@ function renderProfileFields() {
   f("p-start").value = profileData.availability_start || "Immediately";
   f("p-dur").value = profileData.availability_duration || "Flexible";
   f("p-type").value = profileData.availability_type || "Any";
-  
-  document.getElementById("extracted-display").textContent = 
-    profileData.extracted_skills || "Upload a PDF resume below to extract skills.";
+  document.getElementById("extracted-display").textContent = profileData.extracted_skills || "None";
+
+  const t = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || "Not specified"; };
+  t("sum-goal", profileData.career_goal);
+  t("sum-locations", profileData.preferred_locations);
+  t("sum-start", profileData.availability_start);
+  t("sum-skills", profileData.technical_skills);
+  t("sum-extracted", profileData.extracted_skills);
 }
 
-export function saveProfile(formData) {
+function setupEventListeners() {
+  const switchTab = (tab) => {
+    const act = (id, show) => document.getElementById(id).classList.toggle("active", show);
+    act("tab-dash", tab === "dash"); act("tab-profile", tab === "profile");
+    act("btn-dash", tab === "dash"); act("btn-profile", tab === "profile");
+  };
+
+  document.getElementById("btn-dash").onclick = () => switchTab("dash");
+  document.getElementById("btn-profile").onclick = () => switchTab("profile");
+
+  document.getElementById("profile-form").onsubmit = (e) => {
+    e.preventDefault();
+    const fd = {
+      name: document.getElementById("p-name").value,
+      email: document.getElementById("p-email").value,
+      career_goal: document.getElementById("p-goal").value,
+      preferred_domains: document.getElementById("p-domains").value,
+      preferred_locations: document.getElementById("p-locations").value,
+      interests: document.getElementById("p-interests").value,
+      technical_skills: document.getElementById("p-skills").value,
+      availability_start: document.getElementById("p-start").value,
+      availability_duration: document.getElementById("p-dur").value,
+      availability_type: document.getElementById("p-type").value
+    };
+    saveProfile(fd);
+    switchTab("dash");
+  };
+
+  document.getElementById("p-resume").onchange = (e) => {
+    if (e.target.files.length > 0) handleResumeUpload(e.target.files[0]);
+  };
+}
+
+function saveProfile(formData) {
   const newProfile = { ...profileData, ...formData, completed_profile: true };
   localStorage.setItem("career_profile", JSON.stringify(newProfile));
   profileData = newProfile;
   renderProfileFields();
   renderDashboard(5);
-  showToast("Profile and availability preferences recalculated!");
+  showToast("Profile recalculated!");
 }
 
-export async function handleResumeUpload(file) {
-  if (!file) return;
-  showToast("Extracting skills from resume PDF...");
+async function handleResumeUpload(file) {
+  showToast("Extracting PDF skills...");
   try {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -76,27 +108,26 @@ export async function handleResumeUpload(file) {
       const content = await page.getTextContent();
       text += content.items.map(item => item.str).join(" ") + "\n";
     }
-    const skills = extractSkills(text);
-    profileData.extracted_skills = skills.join(", ");
+    profileData.extracted_skills = extractSkills(text).join(", ");
     localStorage.setItem("career_profile", JSON.stringify(profileData));
     renderProfileFields();
     renderDashboard(5);
-    showToast("PDF parsed! Matches recalculated.");
+    showToast("PDF parsed successfully!");
   } catch (err) {
-    showToast("⚠️ Error parsing PDF resume.", true);
+    showToast("⚠️ Error parsing PDF.", true);
   }
 }
 
 function renderDashboard(limit = 5) {
   if (internshipsData.length === 0) return;
   const ranked = internshipsData.map(item => {
-    const details = calculateMatch(profileData, item);
-    return { ...item, ...details };
+    return { ...item, ...calculateMatch(profileData, item) };
   }).sort((a, b) => b.score - a.score);
 
   renderDashboardCards(ranked, limit, () => renderDashboard(25));
   renderTrendingSkills(internshipsData);
   renderCoursePathways(ranked[0]);
+  initDomainChart(profileData);
 }
 
 function showToast(msg, isErr = false) {

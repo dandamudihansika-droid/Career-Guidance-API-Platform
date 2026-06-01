@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="static/css/portal.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
   </script>
@@ -47,6 +48,13 @@
         </div>
 
         <aside class="sidebar-area" style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <div class="panel" style="min-height: 250px; display: flex; flex-direction: column;">
+            <h2>Suitability Analytics</h2>
+            <p class="panel-desc">Compatibility across core tech domains</p>
+            <div style="flex: 1; min-height: 180px; position: relative;">
+              <canvas id="domain-chart"></canvas>
+            </div>
+          </div>
           <div class="panel">
             <h2>Trending Skills</h2>
             <p class="panel-desc">Most requested skills from active corporate listings</p>
@@ -100,53 +108,8 @@
   </main>
 
   <script type="module">
-    import { initPortal, saveProfile, handleResumeUpload } from "./static/js/portal.js";
-    
-    document.addEventListener("DOMContentLoaded", () => {
-      initPortal();
-      
-      const tabDash = document.getElementById("tab-dash");
-      const tabProfile = document.getElementById("tab-profile");
-      const btnDash = document.getElementById("btn-dash");
-      const btnProfile = document.getElementById("btn-profile");
-
-      const switchTab = (tab) => {
-        if (tab === "dash") {
-          tabDash.classList.add("active"); tabProfile.classList.remove("active");
-          btnDash.classList.add("active"); btnProfile.classList.remove("active");
-        } else {
-          tabDash.classList.remove("active"); tabProfile.classList.add("active");
-          btnDash.classList.remove("active"); btnProfile.classList.add("active");
-        }
-      };
-
-      btnDash.addEventListener("click", () => switchTab("dash"));
-      btnProfile.addEventListener("click", () => switchTab("profile"));
-
-      document.getElementById("profile-form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const data = {
-          name: document.getElementById("p-name").value,
-          email: document.getElementById("p-email").value,
-          career_goal: document.getElementById("p-goal").value,
-          preferred_domains: document.getElementById("p-domains").value,
-          preferred_locations: document.getElementById("p-locations").value,
-          interests: document.getElementById("p-interests").value,
-          technical_skills: document.getElementById("p-skills").value,
-          availability_start: document.getElementById("p-start").value,
-          availability_duration: document.getElementById("p-dur").value,
-          availability_type: document.getElementById("p-type").value
-        };
-        saveProfile(data);
-        switchTab("dash");
-      });
-
-      document.getElementById("p-resume").addEventListener("change", (e) => {
-        if (e.target.files.length > 0) {
-          handleResumeUpload(e.target.files[0]);
-        }
-      });
-    });
+    import { initPortal } from "./static/js/portal.js";
+    document.addEventListener("DOMContentLoaded", initPortal);
   </script>
 </body>
 </html>

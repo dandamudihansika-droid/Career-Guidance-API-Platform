@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const infoText = document.querySelector(".file-info-text");
       if (e.target.files.length > 0) {
         infoText.textContent = `Selected file: ${e.target.files[0].name}`;
-        infoText.style.color = "#a78bfa";
+        infoText.style.color = "#3D52A0";
       }
     });
   }
@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const submitBtn = profileForm.querySelector("button[type='submit']");
       submitBtn.textContent = "Saving Profile & Calculations...";
       submitBtn.disabled = true;
-
       try {
         const formData = new FormData(profileForm);
         const res = await fetch("/api/profile", { method: "POST", body: formData });
@@ -48,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (recData.error) {
         if (recData.code === "PROFILE_INCOMPLETE") {
-          recContainer.innerHTML = `<div class="loading-spinner-wrapper"><p>Please <a href="/profile" style="color:#a78bfa;font-weight:600;">complete your profile</a> to receive recommendations.</p></div>`;
+          recContainer.innerHTML = `<div class="loading-spinner-wrapper"><p>Please <a href="/profile" style="color:#3D52A0;font-weight:600;">complete your profile</a> to receive recommendations.</p></div>`;
           coursesContainer.innerHTML = "<p class='loading-placeholder'>Profile incomplete</p>";
         } else recContainer.innerHTML = `<p class='loading-placeholder'>Error: ${recData.error}</p>`;
         return;
@@ -66,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const skillsRow = item.skills.slice(0, 5).map(s => `<span class="badge secondary">${s}</span>`).join("");
         let mismatchSection = "";
         if (item.score < 100.0 && item.lagging_reasons && item.lagging_reasons.length > 0) {
-          mismatchSection = `<div class="mismatch-card"><p class="mismatch-title">Match Gaps (Lagging reasons why not 100%)</p>${item.lagging_reasons.map(r => `<p class="mismatch-item">⚠️ ${r}</p>`).join("")}</div>`;
+          mismatchSection = `<div class="mismatch-card"><p class="mismatch-title">Match Gaps</p>${item.lagging_reasons.map(r => `<p class="mismatch-item">⚠️ ${r}</p>`).join("")}</div>`;
         }
 
         const card = document.createElement("article");
@@ -107,6 +106,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const trendData = await trendRes.json();
       trendingContainer.innerHTML = (trendData.trending || []).map(skill => `<span class="badge">${skill}</span>`).join("");
 
+      // Draw Suitability Radar Chart
+      const selfSkills = document.querySelector('.welcome-summary div:nth-child(5) .summary-val')?.textContent || "";
+      const parsedSkills = document.querySelector('.welcome-summary div:nth-child(6) .summary-val')?.textContent || "";
+      if (window.initDomainChart) {
+        window.initDomainChart(selfSkills + ", " + parsedSkills);
+      }
+
       const topMatch = list[0];
       if (topMatch && topMatch.missing && topMatch.missing.length > 0) {
         coursesContainer.innerHTML = "";
@@ -114,13 +120,10 @@ document.addEventListener("DOMContentLoaded", () => {
           "python": ["Python Beginners - Coursera", "Automate with Python"],
           "sql": ["SQL fundamentals - Khan Academy", "SQL for Data Science"],
           "excel": ["Excel for data analysis", "Advanced spreadsheets"],
-          "power bi": ["Power BI Visualization", "Power BI for analysts"],
-          "tableau": ["Tableau beginner guide", "Tableau Analytics"],
           "html": ["HTML & CSS for Beginners", "Responsive Web Design"],
           "css": ["Modern CSS layouts & Grid", "Responsive Web Design"],
           "javascript": ["JavaScript Deep Dive", "JS and DOM scripting"],
-          "react": ["React Web Fundamentals", "Modern SPAs with React"],
-          "communication": ["Business communication", "Professional presentation"]
+          "react": ["React Web Fundamentals", "Modern SPAs with React"]
         };
 
         topMatch.missing.slice(0, 3).forEach(skill => {
@@ -133,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>`;
         });
       } else {
-        coursesContainer.innerHTML = "<p class='loading-placeholder'>No current skill gaps detected. You are 100% matched!</p>";
+        coursesContainer.innerHTML = "<p class='loading-placeholder'>No skill gaps detected. You are 100% matched!</p>";
       }
     } catch (err) {
       console.error(err);
