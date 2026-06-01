@@ -27,8 +27,10 @@ def create_app():
     app.register_blueprint(api_bp)
     app.register_blueprint(routes_bp)
     
-    return app
-
-def init_db_on_startup():
+    # Auto-initialize DB on startup
     from .db import init_database
     init_database()
+    
+    return app
+
+app = create_app()
