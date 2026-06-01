@@ -1,0 +1,90 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<section class="page-panel profile-panel">
+  <div class="panel-heading">
+    <h1>Complete your profile.</h1>
+    <p>Tell the system about your goals, skills, and availability for internship recommendations.</p>
+  </div>
+
+  <form id="profile-form" class="form-card" enctype="multipart/form-data">
+    <div class="form-group-row">
+      <div>
+        <label>Career Goal</label>
+        <textarea name="career_goal" placeholder="E.g. Data Analyst internship" rows="2">{{ user.career_goal or '' }}</textarea>
+      </div>
+      <div>
+        <label>Other Preferences</label>
+        <textarea name="preferences" placeholder="E.g. flexible schedule, mentorship" rows="2">{{ user.preferences or '' }}</textarea>
+      </div>
+    </div>
+
+    <div class="form-grid-3">
+      <div>
+        <label>Preferred Domains</label>
+        <input type="text" name="preferred_domains" value="{{ user.preferred_domains or '' }}" placeholder="Data Analytics, Web Development" />
+      </div>
+      <div>
+        <label>Preferred Cities</label>
+        <input type="text" name="preferred_locations" value="{{ user.preferred_locations or '' }}" placeholder="Bangalore, Mumbai, Delhi, Remote" />
+      </div>
+      <div>
+        <label>Technical Skills</label>
+        <input type="text" name="technical_skills" value="{{ user.technical_skills or '' }}" placeholder="Python, SQL, HTML" />
+      </div>
+    </div>
+
+    <div class="form-grid-3">
+      <div>
+        <label>Interests</label>
+        <input type="text" name="interests" value="{{ user.interests or '' }}" placeholder="AI, Analytics, Front-end" />
+      </div>
+      <div>
+        <label>Availability Start</label>
+        <select name="availability_start">
+          <option value="Immediately" {% if user.availability_start == 'Immediately' %}selected{% endif %}>Immediately</option>
+          <option value="Within 1 Month" {% if user.availability_start == 'Within 1 Month' %}selected{% endif %}>Within 1 Month</option>
+          <option value="Within 2 Months" {% if user.availability_start == 'Within 2 Months' %}selected{% endif %}>Within 2 Months</option>
+          <option value="Specific Date" {% if user.availability_start == 'Specific Date' %}selected{% endif %}>Specific Date (Specify in goal)</option>
+        </select>
+      </div>
+      <div>
+        <label>Availability Duration</label>
+        <select name="availability_duration">
+          <option value="Flexible" {% if user.availability_duration == 'Flexible' %}selected{% endif %}>Flexible</option>
+          <option value="1 Month" {% if user.availability_duration == '1 Month' %}selected{% endif %}>1 Month</option>
+          <option value="2 Months" {% if user.availability_duration == '2 Months' %}selected{% endif %}>2 Months</option>
+          <option value="3 Months" {% if user.availability_duration == '3 Months' %}selected{% endif %}>3 Months</option>
+          <option value="6 Months" {% if user.availability_duration == '6 Months' %}selected{% endif %}>6 Months</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-grid-2">
+      <div>
+        <label>Preferred Work Mode</label>
+        <select name="availability_type">
+          <option value="Any" {% if user.availability_type == 'Any' %}selected{% endif %}>Any (Work from Home & On-site)</option>
+          <option value="Work from home" {% if user.availability_type == 'Work from home' %}selected{% endif %}>Work from Home / Remote</option>
+          <option value="On-site" {% if user.availability_type == 'On-site' %}selected{% endif %}>On-site Presence</option>
+        </select>
+      </div>
+      <div>
+        <label class="file-label" for="resume">Upload Resume (PDF)</label>
+        <input id="resume" class="file-input" type="file" name="resume" accept="application/pdf" />
+        <span class="file-info-text">
+          {% if user.extracted_skills %}
+          Extracted Skills: {{ user.extracted_skills }}
+          {% else %}
+          Upload your PDF resume to extract key skills automatically.
+          {% endif %}
+        </span>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button type="submit" class="button primary">Save Profile & Recalculate Matches</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

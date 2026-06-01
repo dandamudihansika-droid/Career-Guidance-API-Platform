@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<section class="dashboard-grid">
+  <div class="welcome-card">
+    <div class="welcome-header">
+      <div>
+        <p class="eyebrow">Interactive career advisor</p>
+        <h1>Welcome, <span class="student-name">{{ user.name.split(' ')[0] }}</span>!</h1>
+        <p class="subtitle">Real-time matching powered by automated profile analytics & API reasoning.</p>
+      </div>
+      <div class="actions" style="display: flex; gap: 0.75rem;">
+        <a href="{{ url_for('routes.profile') }}" class="btn-profile-edit">Edit Profile</a>
+        <a href="{{ url_for('auth.logout') }}" class="button" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; box-shadow: none; display: flex; align-items: center; justify-content: center;">Logout</a>
+      </div>
+    </div>
+    
+    <div class="welcome-summary">
+      <div>
+        <p class="summary-label">Career Goal</p>
+        <p class="summary-val">{{ user.career_goal or 'Not set' }}</p>
+      </div>
+      <div>
+        <p class="summary-label">Target Cities</p>
+        <p class="summary-val">{{ user.preferred_locations or 'Any location' }}</p>
+      </div>
+      <div>
+        <p class="summary-label">Availability Mode</p>
+        <p class="summary-val">{{ user.availability_type or 'Any' }} · {{ user.availability_duration or 'Flexible' }}</p>
+      </div>
+      <div>
+        <p class="summary-label">Start Timing</p>
+        <p class="summary-val">{{ user.availability_start or 'Immediately' }}</p>
+      </div>
+      <div>
+        <p class="summary-label">Self-Declared Skills</p>
+        <p class="summary-val scroll-x">{{ user.technical_skills or 'None' }}</p>
+      </div>
+      <div>
+        <p class="summary-label">Resume Parsed Skills</p>
+        <p class="summary-val scroll-x">{{ user.extracted_skills or 'Upload PDF in profile' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content-area">
+    <section class="panel recommendation-panel" style="margin-bottom: 0;">
+      <div class="panel-heading">
+        <h2>Your Internship Recommendations</h2>
+        <p class="panel-desc">API calculated using weighted skills, domain relevance, location city, and availability.</p>
+      </div>
+
+      <div id="recommendations-container" class="internship-list-wrapper">
+        <div class="loading-spinner-wrapper">
+          <div class="spinner"></div>
+          <p>Running API matching engines...</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <aside class="sidebar-area">
+    <div class="panel card small-panel">
+      <h2>Trending Skills</h2>
+      <p class="panel-desc text-small">Most requested skills from active corporate listings</p>
+      <div id="trending-container" class="badge-row">
+        <span class="loading-placeholder">Fetching trends...</span>
+      </div>
+    </div>
+
+    <div class="panel card small-panel">
+      <h2>Suggested Course Pathways</h2>
+      <p class="panel-desc text-small">Enhance matching scores to reach 100% suitability</p>
+      <div id="courses-container">
+        <span class="loading-placeholder">Analysing gap...</span>
+      </div>
+    </div>
+  </aside>
+</section>
+{% endblock %}
