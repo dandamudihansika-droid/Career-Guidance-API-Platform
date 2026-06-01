@@ -1,6 +1,6 @@
 import os
 import sqlite3
-import pandas as pd
+import csv
 from app.config import DATABASE, DATASET_PATH
 from app.db import init_database
 
@@ -8,25 +8,25 @@ def load_dataset():
     if not os.path.exists(DATASET_PATH):
         return []
     
-    df = pd.read_csv(DATASET_PATH)
     records = []
-    
-    for _, row in df.iterrows():
-        records.append((
-            str(row.get("internship_id") or "").strip(),
-            str(row.get("profile") or row.get("Profile") or "").strip(),
-            str(row.get("company") or "").strip(),
-            str(row.get("Location") or row.get("location") or "").strip(),
-            str(row.get("Start Date") or row.get("start_date") or "Immediately").strip(),
-            str(row.get("Stipend") or row.get("stipend") or "").strip(),
-            str(row.get("Duration") or row.get("duration") or "").strip(),
-            str(row.get("Apply by Date") or row.get("apply_by") or "Flexible").strip(),
-            str(row.get("Offer") or row.get("offer") or "").strip(),
-            str(row.get("Education") or row.get("education") or "").strip(),
-            str(row.get("Skills") or row.get("skills") or "").strip(),
-            str(row.get("Perks") or row.get("perks") or "").strip(),
-            str(row.get("description") or row.get("Description") or "").strip(),
-        ))
+    with open(DATASET_PATH, mode="r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            records.append((
+                str(row.get("internship_id") or "").strip(),
+                str(row.get("profile") or row.get("Profile") or "").strip(),
+                str(row.get("company") or "").strip(),
+                str(row.get("Location") or row.get("location") or "").strip(),
+                str(row.get("Start Date") or row.get("start_date") or "Immediately").strip(),
+                str(row.get("Stipend") or row.get("stipend") or "").strip(),
+                str(row.get("Duration") or row.get("duration") or "").strip(),
+                str(row.get("Apply by Date") or row.get("apply_by") or "Flexible").strip(),
+                str(row.get("Offer") or row.get("offer") or "").strip(),
+                str(row.get("Education") or row.get("education") or "").strip(),
+                str(row.get("Skills") or row.get("skills") or "").strip(),
+                str(row.get("Perks") or row.get("perks") or "").strip(),
+                str(row.get("description") or row.get("Description") or "").strip(),
+            ))
     return records
 
 def populate_internships():

@@ -1,6 +1,6 @@
 import re
 import os
-import pandas as pd
+import csv
 from PyPDF2 import PdfReader
 from .config import SKILL_KEYWORDS, DATASET_PATH
 
@@ -63,22 +63,23 @@ def load_internships():
     if not os.path.exists(DATASET_PATH):
         return []
     
-    df = pd.read_csv(DATASET_PATH)
     internships = []
-    for _, row in df.iterrows():
-        title = str(row.get("profile") or row.get("Profile") or "").strip()
-        internships.append({
-            "id": str(row.get("internship_id") or row.get("id") or "").strip(),
-            "title": title or "Internship Opportunity",
-            "profile": title,
-            "company": str(row.get("company") or row.get("Company") or "Unknown").strip(),
-            "location": str(row.get("Location") or row.get("location") or "Remote").strip(),
-            "description": str(row.get("description") or row.get("Description") or "").strip(),
-            "requirements": str(row.get("requirements") or row.get("Requirements") or "").strip(),
-            "skills": normalize_list(row.get("Skills") or row.get("skills") or ""),
-            "stipend": str(row.get("Stipend") or row.get("stipend") or "Not specified").strip(),
-            "duration": str(row.get("Duration") or row.get("duration") or "Flexible").strip(),
-            "start_date": str(row.get("Start Date") or row.get("start_date") or "Immediately").strip(),
-            "apply_by": str(row.get("Apply by Date") or row.get("apply_by") or "Flexible").strip()
-        })
+    with open(DATASET_PATH, mode="r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            title = str(row.get("profile") or row.get("Profile") or "").strip()
+            internships.append({
+                "id": str(row.get("internship_id") or row.get("id") or "").strip(),
+                "title": title or "Internship Opportunity",
+                "profile": title,
+                "company": str(row.get("company") or row.get("Company") or "Unknown").strip(),
+                "location": str(row.get("Location") or row.get("location") or "Remote").strip(),
+                "description": str(row.get("description") or row.get("Description") or "").strip(),
+                "requirements": str(row.get("requirements") or row.get("Requirements") or "").strip(),
+                "skills": normalize_list(row.get("Skills") or row.get("skills") or ""),
+                "stipend": str(row.get("Stipend") or row.get("stipend") or "Not specified").strip(),
+                "duration": str(row.get("Duration") or row.get("duration") or "Flexible").strip(),
+                "start_date": str(row.get("Start Date") or row.get("start_date") or "Immediately").strip(),
+                "apply_by": str(row.get("Apply by Date") or row.get("apply_by") or "Flexible").strip()
+            })
     return internships
