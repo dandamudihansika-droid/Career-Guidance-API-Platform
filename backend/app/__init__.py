@@ -3,10 +3,14 @@ import os
 from flask import Flask
 
 def create_app():
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    template_dir = os.path.join(project_root, "frontend", "templates")
+    static_dir = os.path.join(project_root, "frontend", "static")
+    
     app = Flask(
         __name__,
-        template_folder="../templates",
-        static_folder="../static"
+        template_folder=template_dir,
+        static_folder=static_dir
     )
     
     # Imports inside to avoid circular references

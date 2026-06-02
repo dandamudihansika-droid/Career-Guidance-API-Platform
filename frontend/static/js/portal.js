@@ -20,7 +20,7 @@ export async function initPortal() {
   setupEventListeners();
   
   try {
-    const res = await fetch("data/internships.csv");
+    const res = await fetch("../backend/data/internships.csv");
     if (!res.ok) throw new Error("CSV fetch failed");
     const text = await res.text();
     internshipsData = parseCSV(text);
