@@ -105,20 +105,24 @@ def verify_otp():
         flash("Please log in first.", "error")
         return redirect(url_for("auth.login"))
         
+    otp_code = session.get("otp_code")
+    smtp_active = os.environ.get("SMTP_SERVER") is not None
+    demo_otp = None if smtp_active else otp_code
+
     if request.method == "POST":
         entered_otp = request.form.get("otp", "").strip()
-        expected_otp = session.get("otp_code")
+        expected_otp = otp_code
         
         if not entered_otp or entered_otp != expected_otp:
             flash("Invalid OTP. Please check your console log or mail.", "error")
-            return render_template("verify_otp.html")
+            return render_template("verify_otp.html", demo_otp=demo_otp)
             
         session["user_id"] = session.pop("temp_user_id")
         session.pop("otp_code", None)
         flash("OTP Verification successful!", "success")
         return redirect(url_for("routes.dashboard"))
         
-    return render_template("verify_otp.html")
+    return render_template("verify_otp.html", demo_otp=demo_otp)
 
 @auth_bp.route("/logout")
 def logout():

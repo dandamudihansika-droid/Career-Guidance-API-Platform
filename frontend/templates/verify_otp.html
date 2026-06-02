@@ -2,6 +2,11 @@
 
 {% block content %}
 <section class="page-panel auth-panel">
+  {% if demo_otp %}
+  <div class="flash info" style="margin-bottom: 1.5rem; text-align: center; border-radius: 8px; font-size: 0.9rem;">
+    <strong>📢 Demo Mode Active:</strong> Use fallback code: <strong style="color: var(--primary); font-size: 1.1rem;">{{ demo_otp }}</strong>
+  </div>
+  {% endif %}
   <div class="panel-heading">
     <h1>Verify OTP</h1>
     <p>We've sent a 6-digit One-Time Password to your email address.</p>
