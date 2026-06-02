@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<section class="page-panel auth-panel">
+  <div class="panel-heading">
+    <h1>Verify OTP</h1>
+    <p>We've sent a 6-digit One-Time Password to your email address.</p>
+  </div>
+  <form class="form-card" method="post">
+    <label>Enter 6-Digit OTP</label>
+    <input type="text" name="otp" placeholder="123456" pattern="\d{6}" maxlength="6" required autocomplete="off" autofocus />
+
+    <button type="submit" class="button primary">Verify & Log In</button>
+    <p class="helper-text">
+      Didn't receive it? Check your server console log (under fallback mode) or check your email inbox.
+    </p>
+  </form>
+</section>
+{% endblock %}
