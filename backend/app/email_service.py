@@ -3,6 +3,12 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from .config import SMTP_SERVER, SMTP_PORT, SMTP_EMAIL, SMTP_PASSWORD
 
+def safe_print(*args, **kwargs):
+    try:
+        print(*args, **kwargs)
+    except Exception:
+        pass
+
 def send_html_email(to_email, subject, html_content, fallback_plain=""):
     if SMTP_SERVER and SMTP_PORT and SMTP_EMAIL and SMTP_PASSWORD:
         try:
@@ -19,13 +25,13 @@ def send_html_email(to_email, subject, html_content, fallback_plain=""):
             server.login(SMTP_EMAIL, SMTP_PASSWORD)
             server.send_message(msg)
             server.quit()
-            print(f"[SMTP] Email '{subject}' successfully sent to {to_email}")
+            safe_print(f"[SMTP] Email '{subject}' successfully sent to {to_email}")
             return True
         except Exception as e:
-            print(f"[SMTP ERROR] Failed to send email to {to_email}: {e}")
+            safe_print(f"[SMTP ERROR] Failed to send email to {to_email}: {e}")
             
     # Fallback output
-    print(f"\n[EMAIL FALLBACK]\nTo: {to_email}\nSubject: {subject}\n{'-'*30}\n{fallback_plain}\n{'-'*30}\n")
+    safe_print(f"\n[EMAIL FALLBACK]\nTo: {to_email}\nSubject: {subject}\n{'-'*30}\n{fallback_plain}\n{'-'*30}\n")
     return False
 
 def send_otp_email(to_email, otp_code):
