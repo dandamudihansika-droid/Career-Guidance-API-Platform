@@ -131,8 +131,9 @@ def delete_resume_only():
 
 @api_bp.route("/api/test-email", methods=["POST"])
 def test_email_endpoint():
-    to_email = (request.get_json() or {}).get("email", "").strip()
-    if not to_email: return jsonify({"error": "Email is required"}), 400
+    data = request.get_json(silent=True, force=True) or {}
+    to_email = (data.get("email") or request.form.get("email") or "").strip()
+    if not to_email: return jsonify({"error": "Email parameter is required"}), 400
     from .email_service import send_html_email
     subj, fall = "SMTP Test Connection", "Test email from Career Guidance."
     html = "<html><body><h2>SMTP Connection Working!</h2></body></html>"
