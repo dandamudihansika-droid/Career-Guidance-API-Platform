@@ -29,15 +29,15 @@ def save_user(name, email, password_hash):
     conn.commit()
     conn.close()
 
-def update_profile(user_id, goal, domains, locations, interests, skills, prefs, resume, ext_skills, start, dur, type_pref):
+def update_profile(user_id, goal, domains, locations, interests, skills, prefs, resume, ext_skills, start, dur, type_pref, pref_company):
     conn = get_db()
     conn.execute(
         """UPDATE students SET 
            career_goal=?, preferred_domains=?, preferred_locations=?, 
            interests=?, technical_skills=?, preferences=?, 
            resume_text=?, extracted_skills=?, availability_start=?, 
-           availability_duration=?, availability_type=?, completed_profile=1 WHERE id=?""",
-        (goal, domains, locations, interests, skills, prefs, resume, ext_skills, start, dur, type_pref, user_id),
+           availability_duration=?, availability_type=?, preferred_company=?, completed_profile=1 WHERE id=?""",
+        (goal, domains, locations, interests, skills, prefs, resume, ext_skills, start, dur, type_pref, pref_company, user_id),
     )
     conn.commit()
     conn.close()
@@ -68,6 +68,8 @@ def migrate_db(conn):
         conn.execute("ALTER TABLE students ADD COLUMN availability_duration TEXT")
     if "availability_type" not in columns:
         conn.execute("ALTER TABLE students ADD COLUMN availability_type TEXT")
+    if "preferred_company" not in columns:
+        conn.execute("ALTER TABLE students ADD COLUMN preferred_company TEXT")
     conn.commit()
 
 def init_database():
@@ -86,6 +88,7 @@ def init_database():
             preferences TEXT,
             resume_text TEXT,
             extracted_skills TEXT,
+            preferred_company TEXT,
             completed_profile INTEGER DEFAULT 0
         )
     """)

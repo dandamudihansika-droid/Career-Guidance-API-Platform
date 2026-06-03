@@ -60,13 +60,32 @@
       </div>
     </div>
 
-    <div class="form-grid-2">
+    <div class="form-grid-3">
       <div>
         <label>Preferred Work Mode</label>
         <select name="availability_type">
           <option value="Any" {% if user.availability_type == 'Any' %}selected{% endif %}>Any (Work from Home & On-site)</option>
           <option value="Work from home" {% if user.availability_type == 'Work from home' %}selected{% endif %}>Work from Home / Remote</option>
           <option value="On-site" {% if user.availability_type == 'On-site' %}selected{% endif %}>On-site Presence</option>
+        </select>
+      </div>
+      <div>
+        <label>Preferred Company</label>
+        <select name="preferred_company">
+          <option value="Any" {% if user.preferred_company == 'Any' or not user.preferred_company %}selected{% endif %}>Any Company / Startup</option>
+          <option value="Deloitte" {% if user.preferred_company == 'Deloitte' %}selected{% endif %}>Deloitte</option>
+          <option value="Google" {% if user.preferred_company == 'Google' %}selected{% endif %}>Google</option>
+          <option value="Microsoft" {% if user.preferred_company == 'Microsoft' %}selected{% endif %}>Microsoft</option>
+          <option value="Amazon" {% if user.preferred_company == 'Amazon' %}selected{% endif %}>Amazon</option>
+          <option value="Meta" {% if user.preferred_company == 'Meta' %}selected{% endif %}>Meta</option>
+          <option value="Apple" {% if user.preferred_company == 'Apple' %}selected{% endif %}>Apple</option>
+          <option value="Netflix" {% if user.preferred_company == 'Netflix' %}selected{% endif %}>Netflix</option>
+          <option value="TCS" {% if user.preferred_company == 'TCS' %}selected{% endif %}>TCS</option>
+          <option value="Infosys" {% if user.preferred_company == 'Infosys' %}selected{% endif %}>Infosys</option>
+          <option value="Accenture" {% if user.preferred_company == 'Accenture' %}selected{% endif %}>Accenture</option>
+          <option value="J.P. Morgan" {% if user.preferred_company == 'J.P. Morgan' %}selected{% endif %}>J.P. Morgan</option>
+          <option value="Wipro" {% if user.preferred_company == 'Wipro' %}selected{% endif %}>Wipro</option>
+          <option value="Cognizant" {% if user.preferred_company == 'Cognizant' %}selected{% endif %}>Cognizant</option>
         </select>
       </div>
       <div>

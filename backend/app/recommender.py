@@ -13,16 +13,28 @@ def calculate_match(profile, internship):
     score = 0.0
     reasons = []
 
-    # 1. Skills Matching (Max 50 points)
+    # 1. Skills Matching (Max 40 points)
     p_skills = build_skill_set(profile)
     i_skills = {s.lower() for s in internship["skills"]}
     common = p_skills & i_skills
     missing = i_skills - p_skills
     
-    skill_score = 50.0 * (len(common) / max(len(i_skills), 1))
+    skill_score = 40.0 * (len(common) / max(len(i_skills), 1))
     score += skill_score
     if missing:
         reasons.append(f"Missing required skills: {', '.join(sorted([s.title() for s in missing]))}")
+
+    # 1.1. Preferred Company Matching (Max 10 points)
+    pref_company = (profile.get("preferred_company") or "").strip().lower()
+    company_score = 10.0
+    if pref_company and pref_company != "any" and pref_company != "any company":
+        i_company = internship["company"].lower()
+        if pref_company in i_company:
+            company_score = 10.0
+        else:
+            company_score = 0.0
+            reasons.append(f"Company mismatch: Role is at '{internship['company']}', but you prefer '{profile.get('preferred_company')}'")
+    score += company_score
 
     # 2. Domain & Career Goal Matching (Max 15 points)
     domains = [d.lower() for d in normalize_list(profile.get("preferred_domains", ""))]

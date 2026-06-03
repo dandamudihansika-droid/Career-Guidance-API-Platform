@@ -33,6 +33,10 @@
         <p class="summary-label">Start Timing</p>
         <p class="summary-val">{{ user.availability_start or 'Immediately' }}</p>
       </div>
+      <div>
+        <p class="summary-label">Preferred Company</p>
+        <p class="summary-val" id="sum-company">{{ user.preferred_company or 'Any Company' }}</p>
+      </div>
       
       <div style="grid-column: span 4; border-top: 1px solid var(--border); padding-top: 0.75rem; margin-top: 0.25rem;">
         <p class="summary-label">Self-Declared Skills</p>

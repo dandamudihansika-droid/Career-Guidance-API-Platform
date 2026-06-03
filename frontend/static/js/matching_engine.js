@@ -42,7 +42,7 @@ export function calculateMatch(profile, internship) {
   let score = 0.0;
   const reasons = [];
 
-  // 1. Skills Matching (Max 50 points)
+  // 1. Skills Matching (Max 40 points)
   const pSkills = buildSkillSet(profile);
   const iSkills = new Set(normalizeList(internship.skills || internship.Skills).map(s => s.toLowerCase()));
   
@@ -58,11 +58,25 @@ export function calculateMatch(profile, internship) {
     }
   });
 
-  const skillScore = 50.0 * (iSkills.size > 0 ? (commonCount / iSkills.size) : 1);
+  const skillScore = 40.0 * (iSkills.size > 0 ? (commonCount / iSkills.size) : 1);
   score += skillScore;
   if (missing.length > 0) {
     reasons.push(`Missing skills: ${missing.map(s => s.charAt(0).toUpperCase() + s.slice(1)).sort().join(", ")}`);
   }
+
+  // 1.1. Preferred Company Matching (Max 10 points)
+  const prefCompany = (profile.preferred_company || "").trim().toLowerCase();
+  let companyScore = 10.0;
+  if (prefCompany && prefCompany !== "any" && prefCompany !== "any company") {
+    const iCompany = (internship.company || "").toLowerCase();
+    if (iCompany.includes(prefCompany)) {
+      companyScore = 10.0;
+    } else {
+      companyScore = 0.0;
+      reasons.push(`Company mismatch: Role is at '${internship.company}', but you prefer '${profile.preferred_company}'`);
+    }
+  }
+  score += companyScore;
 
   // 2. Domain & Career Goal Matching (Max 15 points)
   const domains = normalizeList(profile.preferred_domains).map(d => d.toLowerCase());

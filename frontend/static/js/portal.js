@@ -8,7 +8,7 @@ const DEFAULT_PROFILE = {
   preferred_domains: "Web, Software", preferred_locations: "Bangalore, Remote",
   interests: "Coding, React", technical_skills: "HTML, CSS, JavaScript",
   extracted_skills: "Python, SQL", availability_start: "Immediately",
-  availability_duration: "6 Months", availability_type: "Any", completed_profile: true
+  availability_duration: "6 Months", availability_type: "Any", preferred_company: "Any", completed_profile: true
 };
 
 let internshipsData = [];
@@ -44,6 +44,7 @@ function renderProfileFields() {
   f("p-start").value = profileData.availability_start || "Immediately";
   f("p-dur").value = profileData.availability_duration || "Flexible";
   f("p-type").value = profileData.availability_type || "Any";
+  if (f("p-company")) f("p-company").value = profileData.preferred_company || "Any";
   document.getElementById("extracted-display").textContent = profileData.extracted_skills || "None";
 
   const t = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || "Not specified"; };
@@ -51,6 +52,7 @@ function renderProfileFields() {
   t("sum-locations", profileData.preferred_locations);
   t("sum-start", profileData.availability_start);
   t("sum-mode", profileData.availability_type + " · " + profileData.availability_duration);
+  t("sum-company", profileData.preferred_company || "Any Company");
 
   const renderBadges = (id, text) => {
     const el = document.getElementById(id);
@@ -91,7 +93,8 @@ function setupEventListeners() {
       technical_skills: document.getElementById("p-skills").value,
       availability_start: document.getElementById("p-start").value,
       availability_duration: document.getElementById("p-dur").value,
-      availability_type: document.getElementById("p-type").value
+      availability_type: document.getElementById("p-type").value,
+      preferred_company: document.getElementById("p-company").value
     };
     saveProfile(fd);
     switchTab("dash");
