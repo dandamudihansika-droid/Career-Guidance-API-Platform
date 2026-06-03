@@ -116,29 +116,28 @@ def save_profile():
 
 @api_bp.route("/api/profile/skills", methods=["PUT"])
 def update_skills_only():
-    if "user_id" not in session:
-        return jsonify({"error": "Unauthorized"}), 401
-    
-    data = request.get_json() or {}
-    new_skills = data.get("skills", "").strip()
-    
-    from .db import get_db
-    conn = get_db()
-    conn.execute("UPDATE students SET technical_skills = ? WHERE id = ?", (new_skills, session["user_id"]))
-    conn.commit()
-    conn.close()
-    
+    if "user_id" not in session: return jsonify({"error": "Unauthorized"}), 401
+    new_skills = (request.get_json() or {}).get("skills", "").strip()
+    from .db import query_db
+    query_db("UPDATE students SET technical_skills = ? WHERE id = ?", (new_skills, session["user_id"]))
     return jsonify({"message": "Skills updated successfully via PUT", "skills": new_skills})
 
 @api_bp.route("/api/profile/resume", methods=["DELETE"])
 def delete_resume_only():
-    if "user_id" not in session:
-        return jsonify({"error": "Unauthorized"}), 401
-        
-    from .db import get_db
-    conn = get_db()
-    conn.execute("UPDATE students SET resume_text = NULL, extracted_skills = NULL WHERE id = ?", (session["user_id"],))
-    conn.commit()
-    conn.close()
-    
+    if "user_id" not in session: return jsonify({"error": "Unauthorized"}), 401
+    from .db import query_db
+    query_db("UPDATE students SET resume_text = NULL, extracted_skills = NULL WHERE id = ?", (session["user_id"],))
     return jsonify({"message": "Resume data cleared successfully via DELETE"})
+
+@api_bp.route("/api/test-email", methods=["POST"])
+def test_email_endpoint():
+    to_email = (request.get_json() or {}).get("email", "").strip()
+    if not to_email: return jsonify({"error": "Email is required"}), 400
+    from .email_service import send_html_email
+    subj, fall = "SMTP Test Connection", "Test email from Career Guidance."
+    html = "<html><body><h2>SMTP Connection Working!</h2></body></html>"
+    if send_html_email(to_email, subj, html, fall):
+        return jsonify({"success": True, "message": f"SMTP test sent to {to_email}", "mode": "SMTP"})
+    from .config import SMTP_SERVER, SMTP_PORT, SMTP_EMAIL, SMTP_PASSWORD
+    missing = [k for k, v in [("SMTP_SERVER", SMTP_SERVER), ("SMTP_PORT", SMTP_PORT), ("SMTP_EMAIL", SMTP_EMAIL), ("SMTP_PASSWORD", SMTP_PASSWORD)] if not v]
+    return jsonify({"success": False, "message": f"SMTP failed. Missing variables: {', '.join(missing)}" if missing else "SMTP failed. Check console trace.", "mode": "Demo"}), 500
