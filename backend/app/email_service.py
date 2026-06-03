@@ -12,8 +12,10 @@ def send_html_email(to_email, subject, html_content, fallback_plain=""):
             msg.attach(MIMEText(html_content, "html"))
             port = int(SMTP_PORT)
             server = smtplib.SMTP_SSL(SMTP_SERVER, port, timeout=10) if port == 465 else smtplib.SMTP(SMTP_SERVER, port, timeout=10)
+            server.ehlo()
             if port != 465:
                 server.starttls()
+                server.ehlo()
             server.login(SMTP_EMAIL, SMTP_PASSWORD)
             server.send_message(msg)
             server.quit()
