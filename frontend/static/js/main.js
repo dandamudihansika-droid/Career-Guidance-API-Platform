@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const listCourses = recCourses[key] || ["Build portfolio projects in this domain"];
           coursesContainer.innerHTML += `
             <div class="course-item">
-              <p>${skill}</p>
+              <p>${skill} <span style="font-size: 0.8rem; font-weight: normal; color: #94a3b8;">(Required by ${topMatch.company})</span></p>
               <ul class="course-list">${listCourses.map(c => `<li>• ${c}</li>`).join("")}</ul>
             </div>`;
         });
