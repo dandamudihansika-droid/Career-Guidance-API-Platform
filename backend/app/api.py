@@ -65,6 +65,7 @@ def save_profile():
     start = request.form.get("availability_start", "Immediately").strip()
     dur = request.form.get("availability_duration", "Flexible").strip()
     type_pref = request.form.get("availability_type", "Any").strip()
+    pref_company = request.form.get("preferred_company", "Any").strip()
 
     resume_text = user["resume_text"] or ""
     ext_skills = user["extracted_skills"] or ""
@@ -86,8 +87,31 @@ def save_profile():
 
     update_profile(
         user["id"], goal, domains, locs, interests, skills, prefs,
-        resume_text, ext_skills, start, dur, type_pref
+        resume_text, ext_skills, start, dur, type_pref, pref_company
     )
+
+    # Spawn background thread for match recommendations notification email
+    try:
+        updated_profile = {
+            "technical_skills": skills, "extracted_skills": ext_skills, "interests": interests,
+            "preferred_company": pref_company, "preferred_domains": domains, "career_goal": goal,
+            "preferred_locations": locs, "availability_type": type_pref, "availability_start": start,
+            "availability_duration": dur
+        }
+        from .email_service import send_profile_matches_email
+        import threading
+        
+        ranked = [{**item, **calculate_match(updated_profile, item)} for item in load_internships()]
+        ranked.sort(key=lambda x: x["score"], reverse=True)
+        
+        threading.Thread(
+            target=send_profile_matches_email,
+            args=(user["email"], user["name"], pref_company, ranked[:3]),
+            daemon=True
+        ).start()
+    except Exception as e:
+        print(f"[EMAIL ERROR] Failed to spawn matching email thread: {e}")
+
     return jsonify({"message": "Profile saved successfully", "success": True})
 
 @api_bp.route("/api/profile/skills", methods=["PUT"])

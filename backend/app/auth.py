@@ -1,11 +1,11 @@
 from functools import wraps
 import os
 import random
-import smtplib
-from email.mime.text import MIMEText
+import threading
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from .db import get_user_by_email, save_user
+from .email_service import send_otp_email, send_welcome_email
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -17,41 +17,7 @@ def login_required(view):
         return view(**kwargs)
     return wrapped_view
 
-def send_otp_email(to_email, otp_code):
-    smtp_server = os.environ.get("SMTP_SERVER")
-    smtp_port = os.environ.get("SMTP_PORT")
-    smtp_user = os.environ.get("SMTP_EMAIL")
-    smtp_pass = os.environ.get("SMTP_PASSWORD")
-    
-    body = f"Hello!\n\nYour One-Time Password (OTP) is: {otp_code}\n\nValid for session login."
-    
-    if smtp_server and smtp_port and smtp_user and smtp_pass:
-        try:
-            msg = MIMEText(body)
-            msg["Subject"] = "Your Career Guidance OTP Code"
-            msg["From"] = smtp_user
-            msg["To"] = to_email
-            
-            port = int(smtp_port)
-            if port == 465:
-                server = smtplib.SMTP_SSL(smtp_server, port, timeout=10)
-                server.login(smtp_user, smtp_pass)
-            else:
-                server = smtplib.SMTP(smtp_server, port, timeout=10)
-                server.starttls()
-                server.login(smtp_user, smtp_pass)
-            server.send_message(msg)
-            server.quit()
-            print(f"[SMTP] Sent OTP to {to_email}")
-            return True
-        except Exception as e:
-            print(f"[SMTP ERROR] {e}")
-            
-    print("\n" + "="*40)
-    print("📢 EMAIL OTP FALLBACK ACTIVE")
-    print(f"To: {to_email} | OTP: {otp_code}")
-    print("="*40 + "\n")
-    return False
+
 
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
@@ -70,6 +36,7 @@ def register():
 
         password_hash = generate_password_hash(password)
         save_user(name, email, password_hash)
+        threading.Thread(target=send_welcome_email, args=(email, name), daemon=True).start()
         flash("Registration successful. Please log in.", "success")
         return redirect(url_for("auth.login"))
 

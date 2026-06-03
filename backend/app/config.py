@@ -25,6 +25,12 @@ ALLOWED_EXTENSIONS = {"pdf"}
 SECRET_KEY = os.environ.get("SECRET_KEY", "career-guidance-secret")
 SESSION_LIFETIME_DAYS = 7
 
+# SMTP Email configurations
+SMTP_SERVER = os.environ.get("SMTP_SERVER")
+SMTP_PORT = os.environ.get("SMTP_PORT")
+SMTP_EMAIL = os.environ.get("SMTP_EMAIL")
+SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
+
 # Supported skills dictionary for PDF text parsing
 SKILL_KEYWORDS = [
     "python", "sql", "java", "html", "css", "javascript",
